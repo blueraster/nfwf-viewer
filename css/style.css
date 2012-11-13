@@ -1,0 +1,39 @@
+      html,body {
+        height:100%;
+        width:100%;
+        margin:0;
+        padding:0;
+      }
+
+      body {
+        background-color:#777;
+        overflow:hidden;
+        font-family:"Trebuchet MS" !important;
+        font-size:14px !important;
+      }
+
+      #map {
+        overflow:hidden;
+        padding:0;
+      }
+
+      #layerListContainer{
+        z-Index:999;
+        display:none;
+      }
+
+      .clickable{
+        cursor: pointer;
+        cursor: hand;
+      }
+
+      .mblViews{
+        width:100%;
+      }
+
+       .mblMainView{
+        width:300px;
+        height:300px;
+      }
+
+ 
