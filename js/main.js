@@ -6,7 +6,7 @@
       dojo.require("dijit.TitlePane");
       dojo.require("esri.dijit.BasemapGallery");
       dojo.require("dijit.form.RadioButton");
-      dojo.require("esri.arcgis.utils");
+      dojo.require("esri.arcgis.utils");      
       dojo.require("dojo.hash");
       dojo.require("esri.tasks.query");
       dojo.require("dojox.gesture.tap");
@@ -45,9 +45,10 @@
        var urlObject = esri.urlToObject(document.location.href);
        var webmap = conf.webmap;
        
-        if (urlObject.query) {
-          var theme = urlObject.query.q;
-           }
+       /* if (urlObject.query) {
+          var theme = urlObject.query.theme;
+          var program = 
+           }*/
         
         var mapDeferred = esri.arcgis.utils.createMap(webmap, "map", {
           mapOptions: {
@@ -97,14 +98,21 @@
 
           dojo.connect(app.map, "onClick", mapClick);
 
-          if (theme){
-             showThisTheme(theme,opLayers,map);
+           if (urlObject.query["program"]){
+            showThisProgram(urlObject.query["program"]);
+            urlObject.query["theme"]="none";//force theme to be none
+          } 
+
+          if (urlObject.query["theme"]){
+             showThisTheme(urlObject.query["theme"],opLayers,map);
           } else {
              dojo.style("layerListContainer","display","block");
-             showThisTheme(conf.allThemesId,opLayers,map);
-
+             showThisTheme("NO THEME",opLayers,map);
           }
          
+         
+ 
+
           createBasemapGallery();
           addFullExtentButton();
 
@@ -146,17 +154,28 @@
        app.map.infoWindow.hide();
 
        app.config.activeTheme = targetLayer;
-       app.config.activeWhere = app.config.themeQueryWhere[targetLayer];
+       app.config.activeWhere = app.config.themeQueryWhere[targetLayer] || "NO THEME";
        
        dojo.forEach(opLayers,function(layer){
         if (layer.id.toUpperCase().indexOf(targetLayer.toUpperCase())<0){
           console.log("remove " + layer.id);
-          map.getLayer(layer.id).hide();
+          map.getLayer(layer.id).hide();          
         } else {
           console.log("keep " + layer.id);
           map.getLayer(layer.id).show();          
         }
        })
+
+      }
+
+      function showThisProgram(program) {
+       
+        var qController = app.controller.queryController;
+
+        qController.set("where",app.config.programQueryField+"='"+program+"'");  //seaturtles, apachetrout      
+        qController.set("url",app.config.featuresURL);
+
+        qController.queryByAttribute();
 
       }
 
@@ -181,7 +200,7 @@
   qController.set("pt",pt);
   qController.set("url",app.config.featuresURL);
 
-  qController.query();
+  qController.queryByGeometry();
   
 }
 

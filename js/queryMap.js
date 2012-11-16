@@ -5,6 +5,8 @@ function QueryController(map){
 
 	var featureLayer;
 	var query = new esri.tasks.Query();
+	
+
 	var selectedSymbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, 
 						 new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, 
 						 new dojo.Color([255,0,0]), 1), new dojo.Color([255,255,0,0.25]));
@@ -46,7 +48,7 @@ function QueryController(map){
 	}
 
 
-	this.query = function(){
+	this.queryByGeometry = function(){
 
 		if (app.config.progress){
 			return;
@@ -55,9 +57,11 @@ function QueryController(map){
 		}
 
 		//show progress
+		
 		var progressGra = new esri.Graphic(options.pt,progressSymbol);
 		app.map.graphics.add(progressGra);
 		
+
 		if (featureLayer==undefined){
 		dojo.forEach(app.map.graphicsLayerIds,function(id){
 			if (id.toUpperCase().indexOf(app.config.featuresId.toUpperCase())>-1){
@@ -76,6 +80,7 @@ function QueryController(map){
 						geometry: dojo.toJson(options.pt),
 						where: options.where,
 						geometryType:"esriGeometryPoint",
+						orderByFields:"PriorityTh,Program",
 						f:"json",
 						outFields:"*"
 		             }
@@ -141,7 +146,7 @@ function QueryController(map){
 			app.map.graphics.clear();
 			app.config.progress=false;
 		} else {
-			query.geometry = options.pt;
+			query.geometry = options.pt || null;
 			query.where = app.config.featuresUniqueField + " IN ("+listGeomQuery.join(",")+")";
 			featureLayer.selectFeatures(query,esri.layers.FeatureLayer.SELECTION_NEW,that.returnedGeometry);
 
@@ -202,7 +207,7 @@ function QueryController(map){
 		  var li = dojo.create("li");
 
           var item = new dojox.mobile.ListItem({
-                   label: item.attributes.Program,
+                   label: item.attributes.PriorityTh + "> " + item.attributes.Program,
                    moveTo:"View"+item.id,
                    id:item.id,
                    checkClass:"images/checkmark.png",
@@ -237,7 +242,7 @@ function QueryController(map){
 		
 		//mainView.addChild(programList);
 		homeInfoHeight = contentArr.length*45;
-		app.map.infoWindow.resize(350, homeInfoHeight)
+		app.map.infoWindow.resize(400, homeInfoHeight)
 		app.map.infoWindow.setContent(mainView.domNode);
 		app.map.infoWindow.show(options.pt);
 
@@ -250,7 +255,7 @@ function QueryController(map){
 			if (id=="programsView"){height=homeInfoHeight}
 			var v = dojox.mobile.currentView;
             v.performTransition(id,1,"slide");
-            app.map.infoWindow.resize(350, height);
+            app.map.infoWindow.resize(400, height);
 	}
 
 	this.returnedGeometry = function(response,method){
@@ -308,6 +313,27 @@ function QueryController(map){
 		currentlyDisplayGraphics[idStr].setSymbol(selectedSymbol);
 		}
 	}
+
+	this.queryByAttribute = function(){
+		var queryTask = new esri.tasks.QueryTask(options.url);
+		query.where = options.where;
+		query.returnGeometry = true;
+		query.outFields = ["*"];
+
+		//alert(options.url);
+		
+		queryTask.execute(query, function(results){
+			that.returnedGeometry(results.features);	
+			if (results.features.length>0)	{
+				var extents = esri.graphicsExtent(results.features);				
+				app.map.setExtent(extents,true);
+
+			}
+		});
+		
+
+	}
+
 
 
 

@@ -18,7 +18,8 @@ var config = {
 			allThemesId:"all",
 			featuresId:"activeprograms",
 			featuresURL:"",
-			featuresUniqueField:"OBJECTID_1"
+			featuresUniqueField:"OBJECTID_1",
+			programQueryField:"ShortName"
 		
 
 			}	
