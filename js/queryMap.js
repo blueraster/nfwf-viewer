@@ -58,9 +58,10 @@ function QueryController(map){
 
 		//show progress
 		
+		if (app.config.mode=="theme"){
 		var progressGra = new esri.Graphic(options.pt,progressSymbol);
 		app.map.graphics.add(progressGra);
-		
+		}
 
 		if (featureLayer==undefined){
 		dojo.forEach(app.map.graphicsLayerIds,function(id){
@@ -72,15 +73,17 @@ function QueryController(map){
 
 		});
 		}
-
-		
+		var orderByFields = "Program";
+		if (app.config.activeTheme==""){
+			orderByFields = "PriorityTh,Program";
+		}
 
 		var content = {
 						returnGeometry:false,
 						geometry: dojo.toJson(options.pt),
 						where: options.where,
 						geometryType:"esriGeometryPoint",
-						orderByFields:"PriorityTh,Program",
+						orderByFields:orderByFields,
 						f:"json",
 						outFields:"*"
 		             }
@@ -103,7 +106,7 @@ function QueryController(map){
 
 
 		var title = "";
-		var content = [];
+		var content = {};
 		//var contentTemplate = [];
 		var listGeomQuery = [];
 		var listGeomNoQuery = [];
@@ -120,6 +123,7 @@ function QueryController(map){
 
 		dojo.forEach(features,function(feature){
 			var id = feature.attributes[app.config.featuresUniqueField];
+			var theme = feature.attributes[app.config.themeField];
 			var idStr = "ID"+id;
 			listGeomSelected.push(idStr);
 			if (geometryBank[idStr]==undefined){
@@ -127,7 +131,11 @@ function QueryController(map){
 			} else {
 				listGeomNoQuery.push(idStr);
 			}
-			content.push({id:idStr,attributes:feature.attributes});
+			
+			if (content[theme]==undefined){
+				content[theme] = [];
+			}
+			content[theme].push({id:idStr,attributes:feature.attributes});
 			//content.push("<div id='"+idStr+"' class='clickable' onmouseover='highlightSymbol(this)' onmouseout='defaultSymbol(this)'>"+feature.attributes.Program+"<div>");
 		})
 
@@ -138,32 +146,37 @@ function QueryController(map){
 
 		app.map.infoWindow.setTitle(features.length + " Programs found");
 			
+		if (app.config.mode=="theme") {//show identified graphics
 
-		
+				if (listGeomQuery.length==0){
+					clearMapGraphics();
+					app.config.progress=false;
+				} else {
+					query.geometry = options.pt || null;
+					query.where = app.config.featuresUniqueField + " IN ("+listGeomQuery.join(",")+")";
+					featureLayer.selectFeatures(query,esri.layers.FeatureLayer.SELECTION_NEW,that.returnedFeatures);
 
+				}
 
-		if (listGeomQuery.length==0){
-			app.map.graphics.clear();
-			app.config.progress=false;
+				if (listGeomNoQuery.length>0){
+					that.showGraphics(listGeomNoQuery);
+				}
+
 		} else {
-			query.geometry = options.pt || null;
-			query.where = app.config.featuresUniqueField + " IN ("+listGeomQuery.join(",")+")";
-			featureLayer.selectFeatures(query,esri.layers.FeatureLayer.SELECTION_NEW,that.returnedGeometry);
-
+			app.config.progress=false;		
 		}
-
-		if (listGeomNoQuery.length>0){
-			that.showGraphics(listGeomNoQuery);
-		}
-
 
 	} else {//end if
-		app.config.progress=false;
-		app.map.graphics.clear();
+
+		app.config.progress=false;		
+		clearMapGraphics();
+		
 	}
 	}
 
-	this.buildInfoWindow = function(contentArr){
+	this.buildInfoWindow = function(contentObj){
+		console.log("buildInfoWindow");
+
 		var mainView = new dojox.mobile.View({id:"mainView",class:"mblMainView"},dojo.create("div"));
 		var listView = new dojox.mobile.View({id:"programsView",class:"mblViews"},dojo.create("div"));	
 
@@ -173,7 +186,27 @@ function QueryController(map){
 		mainView.addChild(listView);
 		listView.addChild(programList);
 
-		dojo.forEach(contentArr,function(item){
+		var totalPopupItems = 0;
+		
+
+
+		for (var item in contentObj) {
+
+		//add theme title item
+		if (app.config.activeTheme=="all") {
+	  	 var itemTitle = new dojox.mobile.ListItem({
+	           label: item,
+	           id:item+"Theme",
+	           class:"popupListTitle"
+	        }, dojo.create("li"));
+
+	  	 programList.addChild(itemTitle);
+	  	 totalPopupItems++;
+	  	 homeInfoHeight+=22;
+	  	 }
+
+	  	 //add all features title for the theme
+		dojo.forEach(contentObj[item],function(item){
 
 		  var infoView = new dojox.mobile.View({id:"View"+item.id,class:"mblViews"},dojo.create("div"));
 
@@ -207,41 +240,37 @@ function QueryController(map){
 		  var li = dojo.create("li");
 
           var item = new dojox.mobile.ListItem({
-                   label: item.attributes.PriorityTh + "> " + item.attributes.Program,
+                   label: item.attributes.Program,
                    moveTo:"View"+item.id,
                    id:item.id,
-                   checkClass:"images/checkmark.png",
+                   class:"popupListItem",
                    onClick:dojo.partial(that.transitionView,"View"+item.id)                   
                 }, li);
 
          dojo.addClass(item.domNode,"clickable");
 
-
+         if (app.config.mode=="theme") {
          var overEvt = dojo.connect(item.domNode,"onmouseover",function(evt){
-         		console.log(item.id);
-				dojo.partial("highlightSymbol",item.id)();
-				//dojo.partial(that.highlightSymbol();
+				dojo.partial("highlightSymbol",item.id)();				
          });
        
 
-         var outEvt = dojo.connect(item.domNode,"onmouseout",function(evt){   
-         	console.log(item.id);
-      	//   if (evt.originalTarget.offsetParent!=null)      	{
+         var outEvt = dojo.connect(item.domNode,"onmouseout",function(evt){ 	
       		dojo.partial("defaultSymbol",item.id)();
-        //	that.defaultSymbol(evt.originalTarget.offsetParent.id);
-       //  	}
          });
-         
-      //   eventsArray.push(overEvt);
-       //  eventsArray.push(outEvt);
+         }
+
          
           programList.addChild(item);
+          homeInfoHeight+=25;
+          totalPopupItems++;
 
 		});
 
-		
+		}//end for 
+
 		//mainView.addChild(programList);
-		homeInfoHeight = contentArr.length*45;
+		//homeInfoHeight = totalPopupItems*45;
 		app.map.infoWindow.resize(400, homeInfoHeight)
 		app.map.infoWindow.setContent(mainView.domNode);
 		app.map.infoWindow.show(options.pt);
@@ -258,7 +287,7 @@ function QueryController(map){
             app.map.infoWindow.resize(400, height);
 	}
 
-	this.returnedGeometry = function(response,method){
+	this.returnedFeatures = function(response,method){
 		
 		//get geometry we dont have yet
 
@@ -275,7 +304,7 @@ function QueryController(map){
 		});	
 
 		if (listGeomSelected.length>0){
-			app.map.graphics.clear();
+			clearMapGraphics();
 			app.config.progress=false;
 			that.showGraphics(listGeomSelected);
 		}
@@ -323,7 +352,7 @@ function QueryController(map){
 		//alert(options.url);
 		
 		queryTask.execute(query, function(results){
-			that.returnedGeometry(results.features);	
+			that.returnedFeatures(results.features);	
 			if (results.features.length>0)	{
 				var extents = esri.graphicsExtent(results.features);				
 				app.map.setExtent(extents,true);
@@ -359,3 +388,9 @@ app.controller.queryController.defaultSymbol(id);
 
 }
 
+function clearMapGraphics(){ 
+
+	if (app.config.mode=="theme"){		
+		app.map.graphics.clear();
+	}
+}

@@ -45,18 +45,23 @@
        var urlObject = esri.urlToObject(document.location.href);
        var webmap = conf.webmap;
        
-       /* if (urlObject.query) {
-          var theme = urlObject.query.theme;
-          var program = 
-           }*/
+        var ignorePopups = true;
+
+        if (urlObject.query) {
+          if (urlObject.query["program"]){
+          ignorePopups = false;
+          app.config.mode="program";
+          }
+        }
         
+
         var mapDeferred = esri.arcgis.utils.createMap(webmap, "map", {
           mapOptions: {
             slider: true,
             nav:false,
             displayGraphicsOnPan:false
           },
-          ignorePopups:true
+          ignorePopups:ignorePopups
         });
 
         mapDeferred.addCallback(function(response) {
@@ -88,29 +93,36 @@
           });
 
           dojo.connect(map.infoWindow, 'onHide',function(){
-            
-            app.map.graphics.clear();
+            clearMapGraphics();
             if (dijit.byId("mainView")){
               dijit.byId("mainView").destroyRecursive();
             }
           });
           
 
-          dojo.connect(app.map, "onClick", mapClick);
+          //if (ignorePopups){
+           dojo.connect(app.map, "onClick", mapClick); 
+          //}
+          
 
-           if (urlObject.query["program"]){
+           if (app.config.mode=="program"){
             showThisProgram(urlObject.query["program"]);
             urlObject.query["theme"]="none";//force theme to be none
-          } 
-
-          if (urlObject.query["theme"]){
-             showThisTheme(urlObject.query["theme"],opLayers,map);
+            app.config.activeWhere = app.config.programQueryField+"='"+urlObject.query["program"]+"'";
           } else {
-             dojo.style("layerListContainer","display","block");
-             showThisTheme("NO THEME",opLayers,map);
+              //its a theme
+              if (urlObject.query){
+                 showThisTheme(urlObject.query["theme"],opLayers,map);
+              } else {             
+                 showThisTheme("all",opLayers,map);
+              } 
+
+
           }
-         
-         
+
+              
+
+          
  
 
           createBasemapGallery();
@@ -135,26 +147,51 @@
         basemapGallery.startup();
         
         dojo.connect(basemapGallery, "onError", function(msg) {console.log(msg)});
+        dojo.connect(basemapGallery,"onLoad",function(){
+            basemapGallery.select("basemap_3");
+           });
       }
 
       function addFullExtentButton(){
                 //Add Zoom to Extent buttom
         dojo.query(".esriSimpleSliderDecrementButton").forEach(function(node){
-            dojo.place("<div id='fullExtentDiv'><img src='images/zoomFullExtent.png'/></div>",node,"before");
+            dojo.place("<div id='fullExtentDiv'><img src='images/usa.png'/></div>",node,"before");
             dojo.connect(dojo.byId("fullExtentDiv"),"onclick",function(){
               app.map.setExtent(app.config.initExtent);
             });
+        });
+
+        dojo.query(".esriSimpleSliderDecrementButton").forEach(function(node){
+          node.innerHTML = "";
+          dojo.place("<img src='images/minus.png'/></div>",node);
+        });
+        dojo.query(".esriSimpleSliderIncrementButton").forEach(function(node){
+          node.innerHTML = "";
+          dojo.place("<img src='images/plus.png'/></div>",node);
         });
       }
 
 
       function showThisTheme(targetLayer,opLayers,map) {
 
+         dojo.query("#themeList li").forEach(function(node){
+          if (node.id==targetLayer){
+             dojo.addClass(node,"themeSelected");
+           } else {
+             dojo.removeClass(node,"themeSelected");
+           }         
+        });
+
        
        app.map.infoWindow.hide();
 
        app.config.activeTheme = targetLayer;
-       app.config.activeWhere = app.config.themeQueryWhere[targetLayer] || "NO THEME";
+
+       if (app.config.activeTheme=="all") {
+        dojo.query("#map_zoom_slider").addClass("showthemeMenu");
+        dojo.style("themeMenu","display","block");
+       }
+       
        
        dojo.forEach(opLayers,function(layer){
         if (layer.id.toUpperCase().indexOf(targetLayer.toUpperCase())<0){
@@ -162,7 +199,8 @@
           map.getLayer(layer.id).hide();          
         } else {
           console.log("keep " + layer.id);
-          map.getLayer(layer.id).show();          
+          map.getLayer(layer.id).show();
+          app.config.activeWhere = app.config.themeQueryWhere[targetLayer];      
         }
        })
 
@@ -181,28 +219,31 @@
 
       
 
-      function updateMap(selectedRadio){       
-        showThisTheme(selectedRadio.id,app.webmap.itemInfo.itemData.operationalLayers,app.map);      
+      function updateMap(themeID){       
+
+        showThisTheme(themeID,app.webmap.itemInfo.itemData.operationalLayers,app.map);     
+
       }
 
       function mapClick(evt){
-  if (dijit.byId("mainView")){
-    dijit.byId("mainView").destroyRecursive();
-  }
+          if (dijit.byId("mainView")){
+            dijit.byId("mainView").destroyRecursive();
+          }
 
-  app.map.graphics.clear();
-  app.map.infoWindow.hide();
+          clearMapGraphics();
 
-  var pt = evt.mapPoint;
-  var qController = app.controller.queryController;
+          app.map.infoWindow.hide();
 
-  qController.set("where",app.config.activeWhere);
-  qController.set("pt",pt);
-  qController.set("url",app.config.featuresURL);
+          var pt = evt.mapPoint;
+          var qController = app.controller.queryController;
 
-  qController.queryByGeometry();
+          qController.set("where",app.config.activeWhere);
+          qController.set("pt",pt);
+          qController.set("url",app.config.featuresURL);
+
+          qController.queryByGeometry();
   
-}
+      }
 
       //show map on load
       dojo.addOnLoad(init);

@@ -17,10 +17,12 @@
         padding:0;
       }
 
-      #layerListContainer{
-        z-Index:999;
-        display:none;
+      #map_zoom_slider.showthemeMenu {
+        top:60px;
       }
+
+
+
 
       .clickable{
         cursor: pointer;
@@ -33,7 +35,159 @@
 
        .mblMainView{
         width:300px;
-        height:300px;
+        height:auto;
       }
+
+      .mblListItemRightIcon{
+        display: none;
+      }
+
+      /****POPUP*********/
+
+      .popupListTitle{
+        background-color:#CCCCCC;
+        font-size:13px;
+        font-style:italic;
+       
+        height:20px !important;
+        line-height:20px !important;
+        
+       
+      }
+
+      .popupListTitle .popupListItem{
+        color: rgb(0, 0, 0);
+      }
+
+      /*.esriPopup a{
+        color: rgb(0, 0, 0) !important;
+        }*/
+
+
+      .popupListItem{
+        height:25px !important;
+        line-height:25px !important;
+        font-size:12px;
+      }
+
+      /*****BASEMAP*********/
+
+      #basemapTitlePane_pane{
+         background-color: rgba(0,0,0,0.75);  
+         font-family: "Lato";
+         font-size:11px;        
+         color:#FFF;
+      }
+      #basemapTitlePane .dijitTitlePaneTitle{
+        background: #5bacdf url() !important;
+        height:22px;
+        
+      }
+
+      #basemapTitlePane .dijitTitlePaneTextNode{
+        font-family: "Lato";
+        font-size:12px;        
+        color:#FFF !important;
+      }
+
+      #basemapTitlePane .dijitOpen .dijitArrowNode{
+         background-image:url("../images/arrow-right.png") !important;   
+         width:14px ;
+         height:13px ;
+         background-position:0px 0px;
+
+      }
+
+      #basemapTitlePane .dijitClosed .dijitArrowNode{
+         background-image:url("../images/arrow-down.png") !important;           
+         width:14px ;
+         height:13px ;
+         background-position:0px 0px;
+
+
+      }
+
+      /********ZOOM SLIDER**********/
+      .esriSimpleSlider{
+        border-radius:0px;
+      }
+      .esriSimpleSliderIncrementButton{
+        background-color: rgba(0,0,0,0.75);
+      }
+      
+      .esriSimpleSliderDecrementButton{
+        background-color: rgba(0,0,0,0.75);
+      }
+
+      #fullExtentDiv{
+        width:30px;
+        height:30px;
+        background-color: rgba(0,0,0,0.75);  
+        border-bottom:1px solid #656565;    
+      }
+
+
+      /****MENU****/
+
+
+      #themeMenu{
+        z-Index:30;
+        display:none;
+        overflow:visible;
+        padding: 0px;
+        margin: 0px;  
+        position:absolute; 
+        top:0px; 
+        left:0px;
+        right:0px;
+        height:50px;   
+      }
+
+      #themeList{
+        width:100%;
+        list-style-type: none;
+        padding: 0px;
+        margin: 0px;  
+        font-family: "Lato";
+        font-style: bold;
+        font-size:12px;
+
+      }
+
+
+      #themeList li {
+      float: left;
+      width:25%;
+      height:50px;
+      text-align: center;
+      background-color: rgba(0,0,0,0.75);
+      color:#FFF;
+      line-height: 50px;
+      border-right:1px solid #656565;
+      border-bottom:3px solid #367aa4;
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+      -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+      box-sizing: border-box;         /* Opera/IE 8+ */
+      }
+
+
+
+      #themeList li.menuItem:hover {
+      background-color: #5bacdf;
+      border-bottom:none;
+
+      }
+
+      #themeList li.themeSelected {
+      background-color: #5bacdf;
+      border-bottom:none !important;
+      }
+
+      #themeList li:last-child {
+        border-right:none;
+        border-bottom:3px solid #367aa4;
+      }
+
+      /********/
 
  

@@ -3,7 +3,7 @@ var appConfig = (function(){
 
 
 var config = {
-
+			mode:"theme",
 			initExtent:{},						
 			activeTheme:"",
 			activeWhere:"",
@@ -19,8 +19,9 @@ var config = {
 			featuresId:"activeprograms",
 			featuresURL:"",
 			featuresUniqueField:"OBJECTID_1",
-			programQueryField:"ShortName"
-		
+			programQueryField:"ShortName",
+			themeField:"PriorityTh",
+			programTitleField:"Program"	
 
 			}	
 
