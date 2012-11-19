@@ -69,6 +69,7 @@
           console.log(response);
           app.webmap = response;
           app.map = response.map;
+          app.map.infoWindow.resize(400, "auto");
 
           conf.initExtent = app.map.extent;
           
