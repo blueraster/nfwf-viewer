@@ -29,7 +29,7 @@
         yep : 'js/mouseEventsTablet.js',
         nope: 'js/mouseEventsDesktop.js'
       });*/
-     
+      esri.config.defaults.geometryService = new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 
        dojo.setObject("app.map");
        dojo.setObject("app.config");
@@ -37,23 +37,14 @@
        dojo.setObject("app.model",{});
        dojo.setObject("app.vo",{});
 
-       console.log(app);
 
        app.config = appConfig();       
        var conf = app.config;
 
-       var urlObject = esri.urlToObject(document.location.href);
+      
        var webmap = conf.webmap;
        
-        var ignorePopups = true;
-
-        if (urlObject.query) {
-          if (urlObject.query["program"]){
-          ignorePopups = false;
-          app.config.mode="program";
-          }
-        }
-        
+       
 
         var mapDeferred = esri.arcgis.utils.createMap(webmap, "map", {
           mapOptions: {
@@ -61,26 +52,57 @@
             nav:false,
             displayGraphicsOnPan:false
           },
-          ignorePopups:ignorePopups
+          ignorePopups:true
         });
 
         mapDeferred.addCallback(function(response) {
-          
+        
           console.log(response);
-          app.webmap = response;
+           
+
+         // app.webmap = response;
           app.map = response.map;
-          app.map.infoWindow.resize(400, "auto");
+          
+        
 
           conf.initExtent = app.map.extent;
-          
 
           dojo.setObject("app.controller.queryController");
           app.controller.queryController = new QueryController(app.map);
 
           var map = response.map;
 
+          if(map.loaded){
+           
+                initUI(response);
 
-          var opLayers = response.itemInfo.itemData.operationalLayers;
+              }
+              else{
+                dojo.connect(map,"onLoad",function(){
+                  initUI(response);
+                });
+          }         
+
+
+        });
+
+        mapDeferred.addErrback(function(error) {
+          console.log("Map creation failed: ", dojo.toJson(error));
+        });
+      }//init
+
+      function  initUI(response){
+
+          var conf = app.config;
+         var opLayers = response.itemInfo.itemData.operationalLayers;
+         var urlObject = esri.urlToObject(document.location.href);
+        
+        if (urlObject.query) {
+          if (urlObject.query["program"]){
+          //ignorePopups = false;
+          app.config.mode="program";
+          }
+        }
 
           dojo.forEach(opLayers,function(layer){
             if (layer.resourceInfo.type=="Feature Layer"){
@@ -93,7 +115,7 @@
             app.map.resize();
           });
 
-          dojo.connect(map.infoWindow, 'onHide',function(){
+          dojo.connect(app.map.infoWindow, 'onHide',function(){
             clearMapGraphics();
             if (dijit.byId("mainView")){
               dijit.byId("mainView").destroyRecursive();
@@ -113,29 +135,18 @@
           } else {
               //its a theme
               if (urlObject.query){
-                 showThisTheme(urlObject.query["theme"],opLayers,map);
+                 showThisTheme(urlObject.query["theme"],opLayers,app.map);
               } else {             
-                 showThisTheme("all",opLayers,map);
+                 showThisTheme("all",opLayers,app.map);
               } 
 
 
-          }
-
-              
-
-          
+          }         
  
 
           createBasemapGallery();
           addFullExtentButton();
-
-
-        });
-
-        mapDeferred.addErrback(function(error) {
-          console.log("Map creation failed: ", dojo.toJson(error));
-        });
-      }//init
+      }
 
 
       function createBasemapGallery() {
@@ -190,6 +201,7 @@
 
        if (app.config.activeTheme=="all") {
         dojo.query("#map_zoom_slider").addClass("showthemeMenu");
+        dojo.query("#basemapContainer").addClass("showthemeMenu");
         dojo.style("themeMenu","display","block");
        }
        

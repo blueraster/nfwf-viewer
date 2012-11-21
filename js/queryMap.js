@@ -24,8 +24,8 @@ function QueryController(map){
 
 	var geometryBank = {};
 	var currentlyDisplayGraphics = {};
-	//var homeInfoHeight=0;
-	//var defaultHeight=300;
+	var homeInfoHeight=0;
+	var defaultHeight=300;
 	var eventsArray = [];
 
 
@@ -178,18 +178,18 @@ function QueryController(map){
 	this.buildInfoWindow = function(contentObj){
 		console.log("buildInfoWindow");
 
-		var mainView = new dojox.mobile.View({id:"mainView",class:"mblMainView"},dojo.create("div"));
-		var listView = new dojox.mobile.View({id:"programsView",class:"mblViews"},dojo.create("div"));	
+		var mainView = new dojox.mobile.View({id:"mainView","class":"mblMainView"},dojo.create("div"));
+		var listView = new dojox.mobile.View({id:"programsView","class":"mblViews"},dojo.create("div"));	
 
 		var programList = new dojox.mobile.EdgeToEdgeList({
-							id:"programList",class:"mblViews"},dojo.create("ul"));
+							id:"programList","class":"mblViews"},dojo.create("ul"));
 
 		mainView.addChild(listView);
 		listView.addChild(programList);
 
-		//var totalPopupItems = 0;
+		var totalPopupItems = 0;
 		
-		//homeInfoHeight=0;
+		homeInfoHeight=0;
 
 		for (var item in contentObj) {
 
@@ -198,18 +198,18 @@ function QueryController(map){
 	  	 var itemTitle = new dojox.mobile.ListItem({
 	           label: item,
 	           id:item+"Theme",
-	           class:"popupListTitle"
+	           "class":"popupListTitle"
 	        }, dojo.create("li"));
 
 	  	 programList.addChild(itemTitle);
-	  	 //totalPopupItems++;
-	  	 //homeInfoHeight+=22;
+	  	 totalPopupItems++;
+	  	 homeInfoHeight+=22;
 	  	 }
 
 	  	 //add all features title for the theme
 		dojo.forEach(contentObj[item],function(item){
 
-		  var infoView = new dojox.mobile.View({id:"View"+item.id,class:"mblViews"},dojo.create("div"));
+		  var infoView = new dojox.mobile.View({id:"View"+item.id,"class":"mblViews"},dojo.create("div"));
 
 		  var text ="<div style='position:absolute;left:-8px;top:-8px'><span onclick=homeView('programsView') class='clickable'><strong> << back</strong></span>"+
 		  		"<br><br></div> <div style='padding:0px'>";
@@ -236,7 +236,7 @@ function QueryController(map){
 	  			text+="</div>"
 		  			
 
-		  var content = new dijit.layout.ContentPane({content:text,class:"popupContent"},dojo.create("div"));
+		  var content = new dijit.layout.ContentPane({content:text,"class":"popupContent"},dojo.create("div"));
 		  infoView.addChild(content);
 		 
 		  //infoView.content="fdfds";
@@ -248,7 +248,7 @@ function QueryController(map){
                    label: item.attributes.Program,
                    moveTo:"View"+item.id,
                    id:item.id,
-                   class:"popupListItem",
+                   "class":"popupListItem",
                    onClick:dojo.partial(that.transitionView,"View"+item.id)                   
                 }, li);
 
@@ -267,17 +267,17 @@ function QueryController(map){
 
          
           programList.addChild(item);
-          //homeInfoHeight+=25;
-          //totalPopupItems++;
+          homeInfoHeight+=25;
+          totalPopupItems++;
 
 		});
 
 		}//end for 
 
 		//mainView.addChild(programList);
-		//homeInfoHeight = totalPopupItems*45;
+		homeInfoHeight = totalPopupItems*25;
 		//alert(homeInfoHeight);
-		
+		app.map.infoWindow.resize(350, homeInfoHeight)
 		app.map.infoWindow.setContent(mainView.domNode);
 		app.map.infoWindow.show(options.pt);
 		
@@ -286,15 +286,15 @@ function QueryController(map){
 	this.transitionView = function(id){
 			//alert(homeInfoHeight);
 			console.log(arguments);			
-			//var height=defaultHeight;
-			//if (id=="programsView"){height=homeInfoHeight}
+			var height=defaultHeight;
+			if (id=="programsView"){height=homeInfoHeight}
 			var v = dojox.mobile.currentView;
             v.performTransition(id,1,"slide");
             //var domNode = dojo.query(".sizer.content .contentPane")[0];		
 			//var cpInfoWindow = dijit.getEnclosingWidget(domNode);
 			//cpInfoWindow.resize();
 
-            //app.map.infoWindow.resize(400, "auto");
+            app.map.infoWindow.resize(400, height);
 	}
 
 	this.returnedFeatures = function(response,method){
