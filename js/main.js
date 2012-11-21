@@ -60,7 +60,7 @@
           console.log(response);
            
 
-         // app.webmap = response;
+          app.webmap = response;
           app.map = response.map;
           
         
