@@ -144,7 +144,7 @@ function QueryController(map){
 
 		console.log(listGeomQuery);
 
-		app.map.infoWindow.setTitle(features.length + " Programs found");
+		app.map.infoWindow.setTitle(features.length + (features.length>1?" Programs found":" Program found"));
 			
 		if (app.config.mode=="theme") {//show identified graphics
 
@@ -211,25 +211,29 @@ function QueryController(map){
 
 		  var infoView = new dojox.mobile.View({id:"View"+item.id,class:"mblViews"},dojo.create("div"));
 
-		  var text ="<div><span onclick=homeView('programsView') class='clickable'><strong> << back</strong></span><br><br></div>";
+		  var text ="<div style='position:absolute;left:-8px;top:-8px'><span onclick=homeView('programsView') class='clickable'><strong> << back</strong></span>"+
+		  		"<br><br></div> <div style='padding:0px'>";
 		  		if ( item.attributes.Program.replace(/^\s+|\s+$/g, "").length>0){
-		  		text+="<div>" + item.attributes.Program + "<br><br></div>";
+		  		text+="<div class='popupContentItem'>" + item.attributes.Program + "</div>";
 		  		}
 		  		
+		  		if ( item.attributes.ImageLink.replace(/^\s+|\s+$/g, "").length>0){
+		  		text+="<div class='popupContentItem' style='width:340px;text-align:center;overflow:hidden'><img style='max-width:340px;height:auto' src='" + item.attributes.ImageLink + "'></div>";
+		  		}
 		  		if ( item.attributes.Sub_prgrm.replace(/^\s+|\s+$/g, "").length>0){
-		  		text+="<div>" + item.attributes.Sub_prgrm + "<br><br></div>";
+		  		text+="<div class='popupContentItem'>" + item.attributes.Sub_prgrm + "</div>";
 		  		}
 		  		if ( item.attributes.Note.replace(/^\s+|\s+$/g, "").length>0){
-		  		text+="<div>" + item.attributes.Note + "<br><br></div>";
+		  		text+="<div class='popupContentItem'>" + item.attributes.Note + "</div>";
 		  		}
 		  		if ( item.attributes.ShortDescr.replace(/^\s+|\s+$/g, "").length>0){
-		  		text+="<div>" + item.attributes.ShortDescr + "<br><br></div>";
+		  		text+="<div class='popupContentItem'>" + item.attributes.ShortDescr + "</div>";
 		  		}
 		  		if ( item.attributes.ProgramHom.replace(/^\s+|\s+$/g, "").length>0){
-		  		text+="<div><a href='" + item.attributes.ProgramHom + "' target='_blank' class='clickable'>Program details</a></div>";
+		  		text+="<div class='popupContentItem'><a href='" + item.attributes.ProgramHom + "' target='_blank' class='clickable'>Program details</a></div>";
 		  		}
 
-	  			
+	  			text+="</div>"
 		  			
 
 		  var content = new dijit.layout.ContentPane({content:text,class:"popupContent"},dojo.create("div"));
