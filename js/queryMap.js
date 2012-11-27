@@ -276,7 +276,6 @@ function QueryController(map){
 
 		//mainView.addChild(programList);
 		homeInfoHeight = totalPopupItems*25;
-		//alert(homeInfoHeight);
 		app.map.infoWindow.resize(350, homeInfoHeight)
 		app.map.infoWindow.setContent(mainView.domNode);
 		app.map.infoWindow.show(options.pt);
@@ -288,13 +287,14 @@ function QueryController(map){
 			console.log(arguments);			
 			var height=defaultHeight;
 			if (id=="programsView"){height=homeInfoHeight}
+			app.map.infoWindow.resize(400, height);
 			var v = dojox.mobile.currentView;
-            v.performTransition(id,1,"slide");
+            v.performTransition(id,1,"fade");
             //var domNode = dojo.query(".sizer.content .contentPane")[0];		
 			//var cpInfoWindow = dijit.getEnclosingWidget(domNode);
 			//cpInfoWindow.resize();
-
-            app.map.infoWindow.resize(400, height);
+			
+            
 	}
 
 	this.returnedFeatures = function(response,method){

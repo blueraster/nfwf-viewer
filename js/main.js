@@ -21,14 +21,7 @@
       
 
       function init() {
-      //  esri.config.defaults.io.proxyUrl = "/arcgisserver/apis/javascript/proxy/proxy.ashx";
-        //This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications. 
-       // esri.config.defaults.geometryService = new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
-      /* Modernizr.load({
-        test: Modernizr.touch,
-        yep : 'js/mouseEventsTablet.js',
-        nope: 'js/mouseEventsDesktop.js'
-      });*/
+
       esri.config.defaults.geometryService = new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 
        dojo.setObject("app.map");
