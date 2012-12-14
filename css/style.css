@@ -280,5 +280,13 @@
         top: -35px;
       }
       /********/
+      /*** Legend ***/
+      #legendPanel {
+        z-index: 50;
+        position: absolute;
+        top: 100px;
+        left: 150px;
+      }
+      /**************/
 
  

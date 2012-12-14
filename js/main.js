@@ -14,6 +14,7 @@
       dojo.require("dojox.mobile.View");
       dojo.require("dojox.mobile.ScrollableView");
       dojo.require("dojox.mobile.EdgeToEdgeList");
+      dojo.require("esri.dijit.Legend");
       dojo.require("dojox.mobile.ListItem");
       dojo.require("dojox.mobile");
       dojo.requireIf(!dojo.isWebKit, "dojox.mobile.compat");
@@ -76,8 +77,22 @@
                 });
           }         
 
+          /*var layerInfo = dojo.map(response.itemInfo.itemData.operationalLayers,function(layer,index){
+            console.dir(layer);
+            return {layer: layer.layerObject, title: layer.layerObject.name};
+          });
 
-        });
+          if (layerInfo.length > 0) {
+             var legendDijit = new esri.dijit.Legend({
+               map: map,
+               layerInfos: layerInfo,
+             },"legend");
+            
+             legendDijit.startup();
+          }
+          */
+
+        });// end mapDeferred.addCallback
 
         mapDeferred.addErrback(function(error) {
           console.log("Map creation failed: ", dojo.toJson(error));
