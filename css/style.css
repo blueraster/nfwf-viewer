@@ -97,7 +97,20 @@
          font-size:11px;        
          color:#FFF;
       }
-
+      .dj_ie7 #basemapTitlePane_pane{
+         background-color: #000;
+         background-color: rgb(0,0,0);  
+         font-family: "Lato";
+         font-size:11px;        
+         color:#FFF;
+      }
+      .dj_ie8 #basemapTitlePane_pane{
+         background-color: #000;
+         background-color: rgb(0,0,0);  
+         font-family: "Lato";
+         font-size:11px;        
+         color:#FFF;
+      }
 
       #basemapTitlePane .dijitTitlePaneTitle{
         background: #5bacdf url() !important;
@@ -135,13 +148,11 @@
       .esriSimpleSliderIncrementButton{
         background-color: #000;
         background-color: rgba(0,0,0,0.75);
-        
       }
       
       .esriSimpleSliderDecrementButton{
-         background-color: #000;
+        background-color: #000;
         background-color: rgba(0,0,0,0.75);
-       
       }
 
       #fullExtentDiv{
@@ -149,16 +160,43 @@
         height:30px;
         background-color: #000;
         background-color: rgba(0,0,0,0.75);  
-        
         border-bottom:1px solid #656565;    
       }
+      /*** IE7 & IE8 CSS Fix ***/
+      .dj_ie8 .esriSimpleSliderIncrementButton, .dj_ie7 .esriSimpleSliderIncrementButton{
+        background-color: #000;
+        background-color: rgb(0,0,0);
+      }
+      
+      .dj_ie8 .esriSimpleSliderDecrementButton, .dj_ie7 .esriSimpleSliderDecrementButton{
+        background-color: #000;
+        background-color: rgb(0,0,0);
+      }
 
+      .dj_ie8 #fullExtentDiv, .dj_ie7 #fullExtentDiv{
+        width:30px;
+        height:30px;
+        background-color: #000;
+        background-color: rgb(0,0,0);  
+        border-bottom:1px solid #656565;    
+      }
+      .dj_ie8 .esriSimpleSliderIncrementButton img, .dj_ie7 .esriSimpleSliderIncrementButton img {
+        padding-top: 5px;
+      }
+
+      .dj_ie8 .esriSimpleSliderDecrementButton img, .dj_ie7 .esriSimpleSliderDecrementButton img {
+        padding-top: 12px;
+      }
+      .dj_ie8 #fullExtentDiv img, .dj_ie7 #fullExtentDiv img {
+        padding-top: 7px;
+      }
+      /*** IE7 & IE8 CSS Fix ***/
 
       /****MENU****/
 
 
       #themeMenu{
-        z-Index:30;
+        z-index:30;
         display:none;
         overflow:visible;
         padding: 0px;
@@ -199,6 +237,23 @@
       box-sizing: border-box;         /* Opera/IE 8+ */
       }
 
+      .dj_ie8 #themeList li, .dj_ie7 #themeList li {
+      float: left;
+      width:24.95%;
+      height:50px;
+      text-align: center;
+      background-color: #000;
+      background-color: rgb(0,0,0);
+
+      color:#FFF;
+      line-height: 50px;
+      border-right:1px solid #656565;
+      border-bottom:3px solid #367aa4;
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+      -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+      box-sizing: border-box;         /* Opera/IE 8+ */
+      }
+
 
       #themeList li.menuItem:hover {
       background-color: #5bacdf;
@@ -212,10 +267,18 @@
       }
 
       #themeList li:last-child {
+        white-space: normal;
         border-right:none;
         border-bottom:3px solid #367aa4;
       }
-
+      .adjustedMenuItem {
+        position: relative;
+        top: -8px;
+      }
+      .adjustedMenuItem span {
+        position: relative;
+        top: -35px;
+      }
       /********/
 
  

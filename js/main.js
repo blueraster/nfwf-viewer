@@ -144,17 +144,109 @@
 
       function createBasemapGallery() {
         //add the basemap gallery, in this case we'll display maps from ArcGIS.com including bing maps
+        var basemaps = [];
+        // National Geographic
+        var NatGeoLayer = new esri.dijit.BasemapLayer({
+          url: "http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer"
+        });
+        var NatGeo = new esri.dijit.Basemap({
+          layers: [NatGeoLayer],
+          title: "National Geographic",
+          thumbnailUrl: "./images/natgeo.jpg"
+        });
+        basemaps.push(NatGeo);
+        // Light Gray Canvas Layer
+        var lightGrayLayer = new esri.dijit.BasemapLayer({
+          url: "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer"
+        });
+        var lightGrayRefLayer = new esri.dijit.BasemapLayer({
+          url: "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer"
+        });
+        var lightGray = new esri.dijit.Basemap({
+          layers: [lightGrayRefLayer,lightGrayLayer],
+          title: "Light Gray Canvas",
+          thumbnailUrl: "./images/light_gray_canvas.png"
+        })
+        basemaps.push(lightGray);
+        // World Terrain with Labels
+        var worldTerrainLayer = new esri.dijit.BasemapLayer({
+          url: "http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer"
+        });
+        var worldTerrainRefLayer = new esri.dijit.BasemapLayer({
+          url: "http://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer"
+        });
+        var worldTerrain = new esri.dijit.Basemap({
+          layers: [worldTerrainRefLayer,worldTerrainLayer],
+          title: "Terrain with Labels",
+          thumbnailUrl: "./images/Terrain_with_labels.png"
+        })
+        basemaps.push(worldTerrain);
+        // Topographic Layer
+        var topoLayer = new esri.dijit.BasemapLayer({
+          url: "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer"
+        });
+        var topo = new esri.dijit.Basemap({
+          layers: [topoLayer],
+          title: "Topographic",
+          thumbnailUrl: "./images/topographic.jpg"
+        });
+        basemaps.push(topo);
+        // Imagery 
+        var imageryLayer = new esri.dijit.BasemapLayer({
+          url: "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"
+        });
+        var imagery = new esri.dijit.Basemap({
+          layers: [imageryLayer],
+          title: "Imagery",
+          thumbnailUrl: "./images/imagery.jpg"
+        })
+        basemaps.push(imagery);
+        //Imagery with Labels
+        var imageryRefLayer = new esri.dijit.BasemapLayer({
+          url: "http://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer"
+        });
+        var imageryLabels = new esri.dijit.Basemap({
+          layers: [imageryRefLayer,imageryLayer],
+          title: "Imagery with Labels",
+          thumbnailUrl: "./images/imagery_with_labels.png"
+        })
+        basemaps.push(imageryLabels);
+        // Streets Map
+        var streetsLayer = new esri.dijit.BasemapLayer({
+          url: "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"
+        })
+        var streets = new esri.dijit.Basemap({
+          layers: [streetsLayer],
+          title: "Streets",
+          thumbnailUrl: "./images/streets.jpg"
+        });
+        basemaps.push(streets);
+        // Oceans
+        var oceansLayer = new esri.dijit.BasemapLayer({
+          url: "http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer"
+        });
+        var oceans = new esri.dijit.Basemap({
+          layers: [oceansLayer],
+          title: "Oceans",
+          thumbnailUrl: "./images/oceans.jpg"
+        });
+        basemaps.push(oceans);
+
+        // Add the Basemaps Array to the Basemap Gallery Widget and Start it up
+
         var basemapGallery = new esri.dijit.BasemapGallery({
-          showArcGISBasemaps: true,         
+          showArcGISBasemaps: false,
+          basemaps: basemaps,         
           map: app.map
         }, "basemapGallery");
 
         basemapGallery.startup();
-        
+
         dojo.connect(basemapGallery, "onError", function(msg) {console.log(msg)});
         dojo.connect(basemapGallery,"onLoad",function(){
             basemapGallery.select("basemap_3");
-           });
+        });
+
       }
 
       function addFullExtentButton(){

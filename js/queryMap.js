@@ -125,6 +125,7 @@ function QueryController(map){
 			var id = feature.attributes[app.config.featuresUniqueField];
 			var theme = feature.attributes[app.config.themeField];
 			var idStr = "ID"+id;
+			console.log(id);
 			listGeomSelected.push(idStr);
 			if (geometryBank[idStr]==undefined){
 				listGeomQuery.push(id);
@@ -156,7 +157,6 @@ function QueryController(map){
 					query.where = app.config.featuresUniqueField + " IN ("+listGeomQuery.join(",")+")";
 					query.maxAllowableOffset = 5000;
 					featureLayer.selectFeatures(query,esri.layers.FeatureLayer.SELECTION_NEW,that.returnedFeatures);
-
 				}
 
 				if (listGeomNoQuery.length>0){
@@ -213,23 +213,22 @@ function QueryController(map){
 
 		  var text ="<div style='position:absolute;left:-8px;top:-8px'><span onclick=homeView('programsView') class='clickable'><strong> << back</strong></span>"+
 		  		"<br><br></div> <div style='padding:0px'>";
-		  		if ( item.attributes.Program.replace(/^\s+|\s+$/g, "").length>0){
+		  		if ( (item.attributes.ImageLink!=null) && item.attributes.Program.replace(/^\s+|\s+$/g, "").length>0){
 		  		text+="<div class='popupContentItem'>" + item.attributes.Program + "</div>";
 		  		}
-		  		
-		  		if ( item.attributes.ImageLink.replace(/^\s+|\s+$/g, "").length>0){
+		  		if ( (item.attributes.ImageLink!=null) && item.attributes.ImageLink.replace(/^\s+|\s+$/g, "").length>0){
 		  		text+="<div class='popupContentItem' style='width:340px;text-align:center;overflow:hidden'><img style='max-width:340px;height:auto' src='" + item.attributes.ImageLink + "'></div>";
 		  		}
-		  		if ( item.attributes.Sub_prgrm.replace(/^\s+|\s+$/g, "").length>0){
+		  		if ( (item.attributes.ImageLink!=null) && item.attributes.Sub_prgrm.replace(/^\s+|\s+$/g, "").length>0){
 		  		text+="<div class='popupContentItem'>" + item.attributes.Sub_prgrm + "</div>";
 		  		}
-		  		if ( item.attributes.Note.replace(/^\s+|\s+$/g, "").length>0){
+		  		if ( (item.attributes.ImageLink!=null) && item.attributes.Note.replace(/^\s+|\s+$/g, "").length>0){
 		  		text+="<div class='popupContentItem'>" + item.attributes.Note + "</div>";
 		  		}
-		  		if ( item.attributes.ShortDescr.replace(/^\s+|\s+$/g, "").length>0){
+		  		if ( (item.attributes.ImageLink!=null) && item.attributes.ShortDescr.replace(/^\s+|\s+$/g, "").length>0){
 		  		text+="<div class='popupContentItem'>" + item.attributes.ShortDescr + "</div>";
 		  		}
-		  		if ( item.attributes.ProgramHom.replace(/^\s+|\s+$/g, "").length>0){
+		  		if ( (item.attributes.ImageLink!=null) && item.attributes.ProgramHom.replace(/^\s+|\s+$/g, "").length>0){
 		  		text+="<div class='popupContentItem'><a href='" + item.attributes.ProgramHom + "' target='_blank' class='clickable'>Program details</a></div>";
 		  		}
 
