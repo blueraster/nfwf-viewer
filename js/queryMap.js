@@ -79,7 +79,7 @@ function QueryController(map){
 		}
 
 		var content = {
-						returnGeometry:false,
+						//returnGeometry:false,
 						geometry: dojo.toJson(options.pt),
 						where: options.where,
 						geometryType:"esriGeometryPoint",
@@ -89,18 +89,22 @@ function QueryController(map){
 		             }
 
 
-
 		dojo.io.script.get({
-		  url : options.url + "/query",
+		  url : options.url + "/query",//"http://services.arcgis.com/wKiTqqEYQLgNM4kT/arcgis/rest/services/Footprints_web_4Dec2012/FeatureServer/0",//,
 		  content: content,
 		  callbackParamName : "callback",
-		  load: dojo.hitch(that,"infoWindowContentHandler")
+		  handle: dojo.hitch(that,"infoWindowContentHandler"),
+		  'error': function(err) {
+		  	console.log(err);
+		  }
 		});	
 
 
 	}
 
 	this.infoWindowContentHandler = function(response){
+
+		console.log('infoWindowContentHandler >>> Line 109');
 
 		if (response.features.length>0) {
 
@@ -138,7 +142,7 @@ function QueryController(map){
 			}
 			content[theme].push({id:idStr,attributes:feature.attributes});
 			//content.push("<div id='"+idStr+"' class='clickable' onmouseover='highlightSymbol(this)' onmouseout='defaultSymbol(this)'>"+feature.attributes.Program+"<div>");
-		})
+		});
 
 		that.buildInfoWindow(content);
 

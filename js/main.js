@@ -25,6 +25,9 @@
 
       esri.config.defaults.geometryService = new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 
+      // Proxy for use on staging
+      esri.config.defaults.io.proxyUrl = 'http://staging.blueraster.com/proxy/proxy.php';
+
        dojo.setObject("app.map");
        dojo.setObject("app.config");
        dojo.setObject("app.controller",{});
@@ -325,6 +328,7 @@
 
         qController.set("where",app.config.programQueryField+"='"+program+"'");  //seaturtles, apachetrout      
         qController.set("url",app.config.featuresURL);
+        qController.set("url","https://services.arcgis.com/wKiTqqEYQLgNM4kT/arcgis/rest/services");
 
         qController.queryByAttribute();
 
@@ -339,6 +343,9 @@
       }
 
       function mapClick(evt){
+
+
+
           if (dijit.byId("mainView")){
             dijit.byId("mainView").destroyRecursive();
           }
@@ -349,7 +356,7 @@
 
           var pt = evt.mapPoint;
           var qController = app.controller.queryController;
-
+          pt = {x: pt.x, y: pt.y,spatialReference: {wkid: 102100 }}
           qController.set("where",app.config.activeWhere);
           qController.set("pt",pt);
           qController.set("url",app.config.featuresURL);
