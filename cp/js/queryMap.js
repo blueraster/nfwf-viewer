@@ -82,7 +82,7 @@ function QueryController(map){
 		if (app.config.activeTheme==""){
 			orderByFields = "PriorityTh,Program";
 		}
-
+		
 		var content = {
 						returnGeometry:false,
 						geometry: dojo.toJson(options.pt),
@@ -366,6 +366,7 @@ function QueryController(map){
 	this.queryByAttribute = function(){
 		var queryTask = new esri.tasks.QueryTask(options.url);
 		query.where = options.where;
+		alert(options.where);
 		query.maxAllowableOffset = 5000;
 		query.returnGeometry = true;
 		query.outFields = ["*"];

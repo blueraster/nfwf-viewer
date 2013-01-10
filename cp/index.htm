@@ -44,7 +44,7 @@
       <div id="map" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region:'center'">
     <div dojoType="dijit.layout.ContentPane" id="themeMenu">
       <ul id="themeList" class="clickable">
-          <li class="menuItem" id="all" onClick="updateMap('all')">ALL PROGRAMS</li>
+          <li class="menuItem" id="all" onClick="updateMap('conservationp')">CONSERVATION PRIORITY</li>
          
           <li class="menuItem"  id="freshwater" onClick="updateMap('freshwater')">FRESHWATER</li>
          
@@ -65,7 +65,7 @@
      <div id="legendContainer">
        <div title="LEGEND" dojoType="dijit.TitlePane" id="legendTitlePane" closable="false"  open="true" class="appTitlePane">
          <div dojoType="dijit.layout.ContentPane" style="width:220px; height:70px; overflow:hidden;">
-             <span data-bind="visible:activeTheme()=='all'">All Programs :<br><br><div class="allProgramsLegend legendBlock"></div><br></span>             
+             <span data-bind="visible:activeTheme()=='conservationp'">Conservation Priority Programs :<br><br><div class="allProgramsLegend legendBlock"></div><br></span>             
              <span data-bind="visible:activeTheme()=='freshwater'">Freshwater :<br><br><div class="freshwaterLegend legendBlock"></div><br></span>
              <span data-bind="visible:activeTheme()=='oceans'">Oceans &amp; Coasts :<br><br><div class="oceansLegend legendBlock"></div><br></span>
              <span data-bind="visible:activeTheme()=='forests'">Forests &amp; Grasslands :<br><br><div class="forestsLegend legendBlock"></div><br></span>

@@ -175,7 +175,7 @@
               if (urlObject.query){
                  showThisTheme(urlObject.query["theme"],opLayers,app.map);
               } else {             
-                 showThisTheme("all",opLayers,app.map);
+                 showThisTheme("conservationp",opLayers,app.map);
               } 
 
 
@@ -329,7 +329,7 @@
 
        app.config.activeTheme = targetLayer;
 
-       if (app.config.activeTheme=="all") {
+       if (app.config.activeTheme=="conservationp") {
         dojo.query("#map_zoom_slider").addClass("showthemeMenu");
         dojo.query("#basemapContainer").addClass("showthemeMenu");
         dojo.style("themeMenu","display","block");
